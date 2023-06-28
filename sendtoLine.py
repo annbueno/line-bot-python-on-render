@@ -1,10 +1,9 @@
 import getexceldata
 import os
 import sys
-import wsgiref.simple_server
 from argparse import ArgumentParser
 
-from builtins import bytes
+from flask import Flask, request, abort
 from linebot import (
     LineBotApi, WebhookParser
 )
@@ -12,9 +11,10 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage
+    MessageEvent, TextMessage, TextSendMessage,
 )
-from linebot.utils import PY3
+
+app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -30,31 +30,19 @@ line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
 
-def application(environ, start_response):
-    # check request path
-    if environ['PATH_INFO'] != '/callback':
-        start_response('404 Not Found', [])
-        return create_body('Not Found')
-
-    # check request method
-    if environ['REQUEST_METHOD'] != 'POST':
-        start_response('405 Method Not Allowed', [])
-        return create_body('Method Not Allowed')
-
-    # get X-Line-Signature header value
-    signature = environ['HTTP_X_LINE_SIGNATURE']
+@app.route("/callback", methods=['POST'])
+def callback():
+    signature = request.headers['X-Line-Signature']
 
     # get request body as text
-    wsgi_input = environ['wsgi.input']
-    content_length = int(environ['CONTENT_LENGTH'])
-    body = wsgi_input.read(content_length).decode('utf-8')
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
 
     # parse webhook body
     try:
         events = parser.parse(body, signature)
     except InvalidSignatureError:
-        start_response('400 Bad Request', [])
-        return create_body('Bad Request')
+        abort(400)
 
     # 傳訊息
     data = getexceldata.output_excel_data('')
@@ -62,9 +50,18 @@ def application(environ, start_response):
         if key == '陳沱':
             group = line_bot_api.get_group_summary()
             line_bot_api.push_message(group.group_id, TextMessage(text=value))
+    return 'OK'
 
-    start_response('200 OK', [])
-    return create_body('OK')
+
+if __name__ == "__main__":
+    arg_parser = ArgumentParser(
+        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
+    )
+    arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
+    arg_parser.add_argument('-d', '--debug', default=False, help='debug')
+    options = arg_parser.parse_args()
+
+    app.run(debug=options.debug, port=options.port)
 
 
 def create_body(text):
