@@ -46,5 +46,6 @@ def callback():
     line_bot_api.push_message(group.group_id, TextMessage(text='群組ID='+group.group_id))
     return 'OK'
 
+
 if __name__ == '__main__':
     app.run()
