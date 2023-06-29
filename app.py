@@ -1,8 +1,5 @@
-import getexceldata
 import os
 import sys
-from argparse import ArgumentParser
-
 from flask import Flask, request, abort
 from linebot import (
     LineBotApi, WebhookParser
@@ -45,24 +42,9 @@ def callback():
         abort(400)
 
     # 傳訊息
-    data = getexceldata.output_excel_data('')
-    for key, value in data.items():
-        if key == '陳沱':
-            group = line_bot_api.get_group_summary()
-            line_bot_api.push_message(group.group_id, TextMessage(text=value))
+    group = line_bot_api.get_group_summary()
+    line_bot_api.push_message(group.group_id, TextMessage(text='群組ID='+group.group_id))
     return 'OK'
-
-
-if __name__ == "__main__":
-    arg_parser = ArgumentParser(
-        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
-    )
-    arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
-    arg_parser.add_argument('-d', '--debug', default=False, help='debug')
-    options = arg_parser.parse_args()
-
-    app.run(debug=options.debug, port=options.port)
-
 
 if __name__ == '__main__':
     app.run()
