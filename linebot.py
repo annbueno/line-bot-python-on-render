@@ -11,7 +11,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
-app = Flask(__name__)
+myapp = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -48,4 +48,4 @@ def callback():
 
 
 if __name__ == '__main__':
-    app.run()
+    myapp.run()
