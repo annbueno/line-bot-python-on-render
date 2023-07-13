@@ -1,6 +1,6 @@
 services:
 - type: web
-  name: line-bot-python-flask
+  name: line-bot-python-on-render
   env: python
   buildCommand: pip install gunicorn -r requirements.txt
   startCommand: gunicorn linebot:myapp
