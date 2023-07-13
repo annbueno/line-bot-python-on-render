@@ -3,7 +3,7 @@ services:
   name: line-bot-python-flask
   env: python
   buildCommand: pip install gunicorn -r requirements.txt
-  startCommand: gunicorn linebot:app
+  startCommand: gunicorn linebot:myapp
   plan: free
   autoDeploy: false
   envVars:
