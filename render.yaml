@@ -2,7 +2,6 @@ services:
 - type: web
   name: line-bot-python-flask
   env: python
-  repo: https://github.com/annbueno/line-bot-python-on-render.git
   buildCommand: pip install gunicorn -r requirements.txt
   startCommand: gunicorn linebot:app
   plan: free
