@@ -3,7 +3,7 @@ services:
   name: line-bot-python-on-render
   env: python
   buildCommand: pip install gunicorn -r requirements.txt
-  startCommand: gunicorn linebot:myapp
+  startCommand: gunicorn run:myapp
   plan: free
   autoDeploy: false
   envVars:
