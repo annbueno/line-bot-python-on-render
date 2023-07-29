@@ -22,8 +22,8 @@ parser = WebhookParser(channel_secret)
 @myapp.route("/callback", methods=['POST'])
 def callback():
     try:
-        # 網址被執行時，等同使用 GET 方法發送 request，觸發 LINE Message API 的 push_message 方法
-        line_bot_api.push_message('U0bcbd8d8784be8615a919ddceb0d0b28', TextSendMessage(text='...0960'))
+        group = line_bot_api.get_group_summary()
+        line_bot_api.push_message(group.group_id, TextMessage(text='群組ID=' + group.group_id))
     except InvalidSignatureError:
         abort(400)
     return 'OK'
