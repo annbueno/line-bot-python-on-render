@@ -24,7 +24,7 @@ output_str = output_excel_data('陳沱')
 
 @myapp.route("/callback", methods=['POST'])
 def callback():
-    line_bot_api.push_message('C913bcb87db489f8af1dc7b392a303e73', TextSendMessage(text=output_str))
+    line_bot_api.push_message('C913bcb87db489f8af1dc7b392a303e73', TextSendMessage(text='test='+output_str))
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
     try:
