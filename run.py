@@ -1,42 +1,24 @@
 import os
-import sys
-from flask import Flask, request, abort
-from linebot import LineBotApi, WebhookParser
+from flask import Flask, abort
+from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextSendMessage
+from linebot.models import TextSendMessage
 
 myapp = Flask(__name__)
 
-channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
-channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
-if channel_secret is None:
-    print('Specify LINE_CHANNEL_SECRET as environment variable.')
-    sys.exit(1)
-if channel_access_token is None:
-    print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
-    sys.exit(1)
-
-line_bot_api = LineBotApi(channel_access_token)
-parser = WebhookParser(channel_secret)
+# Channel Access Token
+line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
+# Channel Secret
+handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
 
 @myapp.route("/callback", methods=['POST'])
 def callback():
-    if request.method == 'POST':
-        signature = request.META['HTTP_X_LINE_SIGNATURE']
-        body = request.body.decode('utf-8')
-
-        try:
-            events = parser.parse(body, signature)
-        except InvalidSignatureError:
-            abort(400)
-        for event in events:
-            group = line_bot_api.get_group_summary()
-            if isinstance(event, MessageEvent):  # 如果有訊息事件
-                line_bot_api.reply_message(  # 回復傳入的訊息文字
-                    event.reply_token,
-                    TextSendMessage(text='群組ID=' + group.group_id)
-                )
+    try:
+        # 網址被執行時，等同使用 GET 方法發送 request，觸發 LINE Message API 的 push_message 方法
+        line_bot_api.push_message('U0bcbd8d8784be8615a919ddceb0d0b28', TextSendMessage(text='...0960'))
+    except InvalidSignatureError:
+        abort(400)
     return 'OK'
 
 
