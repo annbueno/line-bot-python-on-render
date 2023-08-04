@@ -19,9 +19,8 @@ channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
-output = output_excel_data('20230729')
-output_str = output['陳沱']
-
+output = output_excel_data('')
+output_str = '北:'+output['Kiki']+'桃竹苗:'+output['Alex']+'中:'+output['陳沱']+'高屏:'+output['竹竹']
 
 @myapp.route("/callback", methods=['POST'])
 def callback():
