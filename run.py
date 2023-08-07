@@ -54,6 +54,7 @@ def handle_message(event):
         group_id = TextMessage(text=event.source.group_id)
         line_bot_api.reply_message(event.reply_token, group_id)
     elif event.message.type == 'image':
+        print('image')
         image_content = line_bot_api.get_message_content(event.message.id)
         # 取得當前時間
         current_time = datetime.datetime.now()
@@ -62,6 +63,7 @@ def handle_message(event):
         # 生成唯一的檔案名稱
         unique_filename = formatted_time + '_' + str(uuid.uuid4().hex[:6])
         filename = unique_filename + '.jpg'  # 上傳檔的名字
+        print('filename' + filename)
         # 把圖片存在本地
         with open(filename, 'wb') as fd:
             for chunk in image_content.iter_content():
