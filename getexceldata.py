@@ -13,7 +13,6 @@ def remove_last_char(store_name):
 
 def output_excel_data(date):
     # 設定檔案資訊
-    folder_path = r'C:\Users\Ann\Downloads'
     file_prefix = 'LGC19680M_'
     if date == '':
         date_format = '%Y%m%d'
@@ -24,15 +23,16 @@ def output_excel_data(date):
     today = datetime.now().strftime(date_format)
     excel_name = ''
 
+    # 取得目前工作目錄
+    current_directory = os.getcwd()
     # 找出符合條件的檔案
-    matching_files = []
-    for filename in os.listdir(folder_path):
+    for filename in os.listdir(current_directory):
         if filename.startswith(file_prefix + today):
             excel_name = filename
 
     if len(excel_name) != 0:
         # 讀取訂單excel
-        file_path = os.path.join(folder_path, excel_name)
+        file_path = os.path.join(current_directory, excel_name)
         df = pd.read_excel(file_path)
 
         # 讀取店名excel表格
