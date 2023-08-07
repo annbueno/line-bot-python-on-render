@@ -4,5 +4,5 @@ pandas
 gunicorn
 xlrd
 openpyxl
-google
-googleapiclient
+google.cloud.bigquery
+google.cloud.storage
