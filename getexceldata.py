@@ -13,6 +13,7 @@ def remove_last_char(store_name):
 
 def output_excel_data(date):
     # 設定檔案資訊
+    folder_path = r'C:\Users\Ann\Downloads'
     file_prefix = 'LGC19680M_'
     if date == '':
         date_format = '%Y%m%d'
@@ -23,16 +24,15 @@ def output_excel_data(date):
     today = datetime.now().strftime(date_format)
     excel_name = ''
 
-    # 取得目前工作目錄
-    current_directory = os.getcwd()
     # 找出符合條件的檔案
-    for filename in os.listdir(current_directory):
+    matching_files = []
+    for filename in os.listdir(folder_path):
         if filename.startswith(file_prefix + today):
             excel_name = filename
 
     if len(excel_name) != 0:
         # 讀取訂單excel
-        file_path = os.path.join(current_directory, excel_name)
+        file_path = os.path.join(folder_path, excel_name)
         df = pd.read_excel(file_path)
 
         # 讀取店名excel表格
@@ -46,9 +46,6 @@ def output_excel_data(date):
         store_dict_by_sales = {}
         for sales, store_set in store_sets_by_area.items():
             store_dict_by_sales[sales] = store_set
-
-        # 定義業務名字
-        sales_name = ['Kiki', 'Alex', '竹竹', '陳沱']
 
         # 建立字典
         # 格式key為店名，值為陣列，陣列中儲存字典，key1為單子總業績、key2為拜恩諾總業績、key3為路易總業績、key4為push總業績
@@ -127,8 +124,8 @@ def output_excel_data(date):
                                           '酵素業績': enzyme_total, 'Push!業績': push_total, '單頭備註': order_remark}
 
             # 輸出每個店名及其對應的品名和銷售數字
-            achievement_str = ''
             for sales, stores in store_dict_by_sales.items():
+                achievement_str = ''
                 for shop, achievement in achievements.items():
                     if shop in stores:
                         items_str = ''
@@ -153,12 +150,22 @@ def output_excel_data(date):
                             if name.startswith('Push!'):
                                 has_push = True
                         amount = achievement['採購金額']
-                        if achievement['拜恩諾業績'] < 3000 and has_bueno:
-                            short_str = '蝨止王與毛管家金額加總不足三千'
-                        if achievement['貓砂業績'] + achievement['酵素業績'] < 3000 and (has_litter or has_enzyme):
-                            short_str = '路易金額加總不足三千 請確認貓砂是否滿三箱'
-                        if achievement['Push!業績'] < 3000 and has_push:
-                            short_str = 'Push!金額不足三千'
+
+                        other_total = achievement['貓砂業績'] + achievement['酵素業績']+achievement['Push!業績']
+                        # 有拜恩諾 拜恩諾金額不足三千 而且其餘加起來不足三千
+                        if has_bueno and achievement['拜恩諾業績'] < 3000 and other_total < 3000:
+                            short_str = '蝨止王與毛管家金額加總不足三千 路易PUSH加總不足三千'
+                        # 有拜恩諾 拜恩諾金額不足三千 但其他加起來超過三千
+                        elif has_bueno and achievement['拜恩諾業績'] < 3000 <= other_total:
+                            short_str = '蝨止王與毛管家金額加總不足三千 只出'
+                            if has_litter or has_enzyme:
+                                short_str += '路易'
+                            if has_push:
+                                short_str += 'PUSH'
+                        # 沒拜恩諾 其他加起來沒超過三千
+                        elif not has_bueno and other_total < 3000:
+                            short_str = '路易和Push金額加總不足三千'
+
                         amount_str = '採購金額：%s 拜恩諾金額：%s 路易金額：%s Push!金額：%s\n%s\n' % (
                             str(amount), str(achievement['拜恩諾業績']),
                             str(achievement['貓砂業績'] + achievement['酵素業績']),
@@ -166,6 +173,5 @@ def output_excel_data(date):
                         remark_str = '單頭備註：' + achievement['單頭備註']
                         shop_str = '店名：%s\n%s\n%s%s\n' % (shop, remark_str, items_str, amount_str)
                         achievement_str += shop_str
-                output_str = sales + '：\n' + achievement_str
-                output_dict[sales] = output_str
+                output_dict[sales] = achievement_str
     return output_dict
