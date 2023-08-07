@@ -26,7 +26,7 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 output = output_excel_data('20230804')
-output_str = '北:'+output['Kiki']+'桃竹苗:'+output['Alex']+'中:'+output['陳沱']+'高屏:'+output['竹竹']
+output_str = '北:'+output['Kiki']+'桃竹苗:'+output['Alex']+'中:'+output['陳沱']
 
 UPLOAD_FOLDER = '1Fyu6HFGWcqILdwpiqxSUxF_odXUFflMC'
 SCOPES = ['https://www.googleapis.com/auth/drive']
