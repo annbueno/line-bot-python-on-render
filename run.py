@@ -32,7 +32,7 @@ UPLOAD_FOLDER = '1Fyu6HFGWcqILdwpiqxSUxF_odXUFflMC'
 SCOPES = ['https://www.googleapis.com/auth/drive']
 SERVICE_ACCOUNT_FILE = 'google_auth.json'  # 金鑰檔案
 
-
+'''
 @myapp.route("/callback", methods=['POST'])
 def callback():
     line_bot_api.push_message('C913bcb87db489f8af1dc7b392a303e73', TextSendMessage(text=output_str))
@@ -43,7 +43,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     return 'OK'
-
+'''
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -54,7 +54,7 @@ def handle_message(event):
         group_id = TextMessage(text=event.source.group_id)
         line_bot_api.reply_message(event.reply_token, group_id)
     elif event.message.type == 'image':
-        print('image')
+        line_bot_api.reply_message(event.reply_token, 'image')
         image_content = line_bot_api.get_message_content(event.message.id)
         # 取得當前時間
         current_time = datetime.datetime.now()
