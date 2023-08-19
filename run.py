@@ -2,7 +2,6 @@ import datetime
 import os
 import uuid
 import psycopg2
-
 from flask import Flask, request, abort
 from linebot import (
     LineBotApi, WebhookHandler
@@ -13,11 +12,7 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageMessage
 )
-
 from getexceldata import output_excel_data
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from googleapiclient.http import  MediaFileUpload
 
 myapp = Flask(__name__)
 
@@ -25,10 +20,6 @@ channel_secret = os.getenv('LINE_CHANNEL_SECRET')
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
-
-UPLOAD_FOLDER = '1Fyu6HFGWcqILdwpiqxSUxF_odXUFflMC'
-SCOPES = ['https://www.googleapis.com/auth/drive']
-SERVICE_ACCOUNT_FILE = 'google_auth.json'  # 金鑰檔案
 
 
 @myapp.route("/callback", methods=['POST'])
@@ -76,7 +67,7 @@ def handle_image_message(event):
     conn.commit()
     cursor.close()
     conn.close()
-
+    
 
 if __name__ == '__main__':
     myapp.run(port=10000)
