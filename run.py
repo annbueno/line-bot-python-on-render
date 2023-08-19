@@ -32,10 +32,10 @@ UPLOAD_FOLDER = '1Fyu6HFGWcqILdwpiqxSUxF_odXUFflMC'
 SCOPES = ['https://www.googleapis.com/auth/drive']
 SERVICE_ACCOUNT_FILE = 'google_auth.json'  # 金鑰檔案
 
-'''
+
 @myapp.route("/callback", methods=['POST'])
 def callback():
-    line_bot_api.push_message('C913bcb87db489f8af1dc7b392a303e73', TextSendMessage(text=output_str))
+    # line_bot_api.push_message('C913bcb87db489f8af1dc7b392a303e73', TextSendMessage(text=output_str))
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
     try:
@@ -43,7 +43,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     return 'OK'
-'''
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
