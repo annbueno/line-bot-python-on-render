@@ -47,7 +47,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(event.reply_token, event.message.type)
+    type = TextMessage(text=event.message.type)
+    line_bot_api.reply_message(event.reply_token, type)
     if event.message.text == 'ID?' or event.message.text == 'id?':
         user_id = TextMessage(text=event.source.user_id)
         line_bot_api.reply_message(event.reply_token, user_id)
