@@ -55,31 +55,32 @@ def handle_message(event):
     elif event.message.text == 'GroupID?':
         group_id = TextMessage(text=event.source.group_id)
         line_bot_api.reply_message(event.reply_token, group_id)
-    elif event.message.type == 'image':
-        image_content = line_bot_api.get_message_content(event.message.id)
-        # 取得當前時間
-        current_time = datetime.datetime.now()
-        # 將時間轉換成字串格式，例如：2023-06-18_12-34-56
-        formatted_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
-        # 生成唯一的檔案名稱
-        unique_filename = formatted_time + '_' + str(uuid.uuid4().hex[:6])
-        filename = unique_filename + '.jpg'  # 上傳檔的名字
-        print('filename' + filename)
-        # 把圖片存在本地
-        with open(filename, 'wb') as fd:
-            for chunk in image_content.iter_content():
-                fd.write(chunk)
-        # 建立憑證物件
-        creds = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-        service = build('drive', 'v3', credentials=creds)
-        # 把本地圖片上傳到雲端
-        media = MediaFileUpload(filename)
-        file = {'name': filename, 'parents': [UPLOAD_FOLDER]}
-        service.files().create(body=file, media_body=media).execute()
     else:
         None
 
+
+@handler.add(MessageEvent, message=ImageMessage)
+def handle_image_message(event):
+    image_content = line_bot_api.get_message_content(event.message.id)
+    # 取得當前時間
+    current_time = datetime.datetime.now()
+    # 將時間轉換成字串格式，例如：2023-06-18_12-34-56
+    formatted_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+    # 生成唯一的檔案名稱
+    unique_filename = formatted_time + '_' + str(uuid.uuid4().hex[:6])
+    filename = unique_filename + '.jpg'  # 上傳檔的名字
+    # 把圖片存在本地
+    with open(filename, 'wb') as fd:
+        for chunk in image_content.iter_content():
+            fd.write(chunk)
+    # 建立憑證物件
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('drive', 'v3', credentials=creds)
+    # 把本地圖片上傳到雲端
+    media = MediaFileUpload(filename)
+    file = {'name': filename, 'parents': [UPLOAD_FOLDER]}
+    service.files().create(body=file, media_body=media).execute()
 
 if __name__ == '__main__':
     myapp.run(port=10000)
