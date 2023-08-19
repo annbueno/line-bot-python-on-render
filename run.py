@@ -51,7 +51,7 @@ def handle_image_message(event):
     
     # 連接到 PostgreSQL 數據庫
     conn = psycopg2.connect(
-        host='postgres://ann:ChUXVe8a8D29IU2WwvJFGyetV206S5I9@dpg-cjgeufb6fquc73dh444g-a/test_7dh8',
+        host='dpg-cjgeufb6fquc73dh444g-a',
         database='test_7dh8',
         user='ann',
         password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9'
@@ -60,7 +60,7 @@ def handle_image_message(event):
     # 建立一個游標
     cursor = conn.cursor()
     # 插入新資料的 SQL 語句
-    sql = "INSERT INTO files (filename, content) VALUES (%s, %s)"
+    sql = 'INSERT INTO files (filename, content) VALUES (%s, %s)'
     # 執行插入操作
     cursor.execute(sql, (filename, content))
     # 提交變更並關閉游標和連接
