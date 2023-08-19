@@ -47,6 +47,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    line_bot_api.reply_message(event.reply_token, event.message.type)
     if event.message.text == 'ID?' or event.message.text == 'id?':
         user_id = TextMessage(text=event.source.user_id)
         line_bot_api.reply_message(event.reply_token, user_id)
@@ -54,7 +55,6 @@ def handle_message(event):
         group_id = TextMessage(text=event.source.group_id)
         line_bot_api.reply_message(event.reply_token, group_id)
     elif event.message.type == 'image':
-        line_bot_api.reply_message(event.reply_token, 'image')
         image_content = line_bot_api.get_message_content(event.message.id)
         # 取得當前時間
         current_time = datetime.datetime.now()
