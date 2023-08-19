@@ -1,6 +1,7 @@
 import datetime
 import os
 import uuid
+import psycopg2
 
 from flask import Flask, request, abort
 from linebot import (
@@ -53,26 +54,29 @@ def handle_message(event):
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
-    print('image')
     image_content = line_bot_api.get_message_content(event.message.id)
     filename = event.message.id + '.jpg'
-    print('filename='+filename)
-    # 把圖片存在本地
-    with open(filename, 'wb') as fd:
-        for chunk in image_content.iter_content():
-            fd.write(chunk)
-    # linebot回傳訊息
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text='收到您上傳的照片囉!'))
-    '''
-    # 建立憑證物件
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('drive', 'v3', credentials=creds)
-    # 把本地圖片上傳到雲端
-    media = MediaFileUpload(filename)
-    file = {'name': filename, 'parents': [UPLOAD_FOLDER]}
-    service.files().create(body=file, media_body=media).execute()
-    '''
+    content = image_content.content
+    
+    # 連接到 PostgreSQL 數據庫
+    conn = psycopg2.connect(
+        host='postgres://ann:ChUXVe8a8D29IU2WwvJFGyetV206S5I9@dpg-cjgeufb6fquc73dh444g-a/test_7dh8',
+        database='test_7dh8',
+        user='ann',
+        password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9'
+    )
+    
+    # 建立一個游標
+    cursor = conn.cursor()
+    # 插入新資料的 SQL 語句
+    sql = "INSERT INTO files (filename, content) VALUES (%s, %s)"
+    # 執行插入操作
+    cursor.execute(sql, (filename, content))
+    # 提交變更並關閉游標和連接
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 
 if __name__ == '__main__':
     myapp.run(port=10000)
