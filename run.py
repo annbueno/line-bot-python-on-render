@@ -45,6 +45,7 @@ def handle_message(event):
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
+    line_bot_api.reply_message(event.reply_token, TextMessage(text='接收圖片'))
     image_content = line_bot_api.get_message_content(event.message.id)
     filename = event.message.id + '.jpg'
     content = image_content.content
@@ -56,7 +57,7 @@ def handle_image_message(event):
         user='ann',
         password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9'
     )
-    
+    line_bot_api.reply_message(event.reply_token, TextMessage(text='開始上傳'))
     # 建立一個游標
     cursor = conn.cursor()
     # 插入新資料的 SQL 語句
