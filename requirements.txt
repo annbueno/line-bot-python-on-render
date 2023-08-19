@@ -7,3 +7,4 @@ openpyxl
 google.cloud.bigquery
 google.cloud.storage
 google-api-python-client
+psycopg2
