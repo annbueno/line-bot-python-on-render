@@ -67,6 +67,7 @@ def handle_image_message(event):
     conn.commit()
     cursor.close()
     conn.close()
+    line_bot_api.reply_message(event.reply_token, TextMessage(text='上傳完畢'))
     
 
 if __name__ == '__main__':
