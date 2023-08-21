@@ -45,11 +45,11 @@ def handle_message(event):
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='接收圖片'))
+    logging.debug('接受到圖片')
     image_content = line_bot_api.get_message_content(event.message.id)
     filename = event.message.id + '.jpg'
     content = image_content.content
-    
+    logging.debug('連接資料庫')
     # 連接到 PostgreSQL 數據庫
     conn = psycopg2.connect(
         host='dpg-cjgeufb6fquc73dh444g-a',
@@ -57,7 +57,7 @@ def handle_image_message(event):
         user='ann',
         password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9'
     )
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='開始上傳'))
+    logging.debug('開始上傳')
     # 建立一個游標
     cursor = conn.cursor()
     # 插入新資料的 SQL 語句
@@ -68,7 +68,7 @@ def handle_image_message(event):
     conn.commit()
     cursor.close()
     conn.close()
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='上傳完畢'))
+    logging.debug('上傳完畢')
     
 
 if __name__ == '__main__':
