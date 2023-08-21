@@ -52,10 +52,12 @@ def handle_image_message(event):
     line_bot_api.reply_message(event.reply_token, TextMessage(text='連接資料庫'))
     # 連接到 PostgreSQL 數據庫
     conn = psycopg2.connect(
-        host='dpg-cjgeufb6fquc73dh444g-a',
+        host='dpg-cjgeufb6fquc73dh444g-a.singapore-postgres.render.com',
+        port='5432',
         database='test_7dh8',
         user='ann',
-        password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9'
+        password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9',
+        sslmode='allow'
     )
     line_bot_api.reply_message(event.reply_token, TextMessage(text='開始上傳'))
     # 建立一個游標
