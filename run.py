@@ -48,7 +48,6 @@ def handle_image_message(event):
     image_content = line_bot_api.get_message_content(event.message.id)
     filename = event.message.id + '.jpg'
     content = image_content.content
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='連接資料庫'))
     # 連接到 PostgreSQL 數據庫
     conn = psycopg2.connect(
         host='dpg-cjgeufb6fquc73dh444g-a.singapore-postgres.render.com',
@@ -58,7 +57,6 @@ def handle_image_message(event):
         password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9',
         sslmode='allow'
     )
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='開始上傳'))
     # 建立一個游標
     cursor = conn.cursor()
     # 插入新資料的 SQL 語句
