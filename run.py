@@ -57,6 +57,7 @@ def handle_image_message(event):
         password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9',
         sslmode='allow'
     )
+    line_bot_api.reply_message(event.reply_token, TextMessage(text='連接成功'))
     # 建立一個游標
     cursor = conn.cursor()
     # 插入新資料的 SQL 語句
