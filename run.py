@@ -57,18 +57,17 @@ def handle_image_message(event):
         password='ChUXVe8a8D29IU2WwvJFGyetV206S5I9',
         sslmode='allow'
     )
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='連接成功'))
     # 建立一個游標
     cursor = conn.cursor()
     # 插入新資料的 SQL 語句
     sql = 'INSERT INTO files (filename, content) VALUES (%s, %s)'
     # 執行插入操作
-    cursor.execute(sql, (filename, content))
+    # cursor.execute(sql, (filename, content))
     # 提交變更並關閉游標和連接
     conn.commit()
     cursor.close()
     conn.close()
-    line_bot_api.reply_message(event.reply_token, TextMessage(text='上傳完畢'))
+    line_bot_api.reply_message(event.reply_token, TextMessage(text='執行完畢'))
     
 
 if __name__ == '__main__':
